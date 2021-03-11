@@ -68,3 +68,19 @@ UNIX Process Management
 - exec() - 프로그램 파일이나 정보를 주면 읽어봐서 메모리에 적재하는 함수
 - wait() - 프로세스가 끝났을 때 알려주는 함수
 
+ #### Context Switching
+
+Context는 프로세스를 정지했다가 다시 복원해서 수행을 하려고 할 때 복원에 필요한 충분한 정보
+
+ 프로세스를 복원하려고 할 때 이전에 있던 프로세스의 정보를 다시 메모리로 가져와서 특정 시점부터 다시 수행하게끔 하는 충분한 정보를 Context라고 하고 그 두개를 바꾸는게 Context Switching
+
+1. 그 프로세스의 상태를 어떻게 저장할 것인가
+2. 현재 수행하고 있는 프로세스의 수행을 어떻게 중단할 것인가
+3. 이전에 저장됐던 프로세스를 어떻게 복원할 것인가
+
+이전에 수행했던 프로세스들을 올바르게 작동하게 만들기 위해서는 위 문제들을 해결해야한다.
+
+##### The Process Stack
+
+ Stack에 저장되는 것들 : Local variables, Arguments to functions, Return addresses from functions 
+
