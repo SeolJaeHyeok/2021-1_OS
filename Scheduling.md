@@ -274,3 +274,86 @@ MLFQ는 조정을 해서 밸런싱이 가능하기 때문에 상용 OS에서도 
 
 위 처럼  사용자가 OS들에게 Advice를 줄 수 있도록 하는 OS들도 있다.
 
+----
+
+#### Fairness
+
+<img src="./Images/Scheduling35.png" />
+
+공정성은 수학적으로 쉽게 정의되는 개념이 아니다. 가장 쉽게 생각할 수 있는 것은 모든 프로세스들에게 똑같은 CPU를 나눠준다로 생각할 수 있다. MLFQ의 경우는 Fairness가 좋은 편이 아니다.
+
+----
+
+#### Lottery Scheduling
+
+<img src="./Images/Scheduling36.png" />
+
+각각의 프로세스들에게 티켓을 나눠주는 것
+
+----
+
+#### Implementation Advantages
+
+<img src="./Images/Scheduling37.png" />
+
+Lottery Scheduling을 사용하면
+
+1. 구현에 있어서 굉장히 간단하다는 장점이 있다.
+2. 프로세스의 상태도 많은 것을 저장할 필요가 없다.
+3. CPU time을 프로세스 간의 자동적으로 나눠줄 수 있다.
+4. 프로세스들의 우선순위들을 할당하기 쉽고 중간에 수정하기도 쉽다.
+
+----
+
+#### Is Lottery Scheduling Fair?
+
+<img src="./Images/Scheduling38.png" />
+
+<img src="./Images/Scheduling39.png" />
+
+Lottery Scheduling은 단기간에서는 확률적으로 문제가 될 수 있고 장기적으로 실행했을 때 설정한 확률에 수렴하는 결과가 있을 수 있다.
+
+즉, 수행 시간이 길수록 Fairness가 보장된다.
+
+----
+
+#### Stride Scheduling
+
+랜덤하게 추첨을 하기 때문에 문제(보장x)가 발생할 수 있는데 임의의 Interval을 주게 되면 그 안에서는 반드시 보장을 해주겠다는 스케줄링. ex) 1초 안에는 100ms를 보장해주겠다.
+
+대표적인 것이 Stride Scheduling
+
+<img src="./Images/Scheduling40.png" />
+
+
+
+ 각 프로세스를 Lottery Scheduling과 같이 티켓을 가지고 있다. 
+
+그리고 이 티켓들의 공배수(아주 큰 수)를 만들고 그 숫자를 티켓수로 나눈 것을 Stride라고 한다.
+
+그리고 Pass 값을 각 프로세스마다 가지게 되는데 (초기값은 0) 수행을 한 번 하면 Stride 값을 정하게 된다. 다시 말해 한 번 수행하게 되면 Stride만큼 앞으로 가게 되는 것이다.
+
+너무 앞서간 프로세스가 있다면 수행시키지 않고 뒤에 있는 프로세스들을 수행시킨다는 것이 기본적인 원리
+
+<img src="./Images/Scheduling41.png" />
+
+ 
+
+위의 표를 보면 세 개의 프로세스가 200 Stride에서 같아짐을 확인할 수 있는데 이는 각 프로세스의 Stride의 최소 공배수가 200이기 때문이다. 
+
+여기서 전체 티켓을 각 프로세스의 티켓으로 나눈 확률들이 200 Stride까지 도달 했을 때 프로세스가 수행된 전체 횟수를 각 프로세스가 수행된 횟수로 나눴을 때의 확률과 같아진 것을 확인할 수 있다.
+
+이렇게 Stride Scheduling을 사용하게 되면 공정성에 대한 보장이 된다.
+
+----
+
+<img src="./Images/Scheduling42.png" />
+
+Stride Scheduling은 구현에 있어서는 Lottery Scheduling 보다 복잡하다.
+
+그리고 새로운 프로세스가 도착했을 때 이 프로세스에 pass 값을 무엇을 줘야하는지를 해결해야 한다. 이에 대한 간단한 해결책은 새로 들어온 프로세스에게 다른 프로세스들과 동일한 값을 준다는 것인데 이렇게 하게 되면 전체의 티켓값이 바뀌기 때문에 Pass 값에 영향을 주게 된다.
+
+Lottery Scheduler와 Stride Scheduler 모두 티켓값을 어떻게 줘야하는지에 대한 문제가 있다. 
+
+이 문제는 아직 해결된 바가 없고 보통 사용자에게 티켓을 어떻게 줘야하는지를 일임하거나 아니면 동일한 숫자를 계속해서 할당하는 식으로 사용을 하고 있다.
+
