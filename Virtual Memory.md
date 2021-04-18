@@ -145,3 +145,72 @@ MMU가 Virtual Address를 Physical Address로 바꾸는 방법은 여러 가지�
 
 ----
 
+#### Base and Bounds Registers
+
+<img src="./Images/virtualmemory18.png" />
+
+Base Register와 Bound Register를 사용하는 것이다. 
+
+가상메모리가 연속적으로 있는 하나의 덩어리고 이 연속적으로 있는 가상 주소 덩어리를 연속적으로 있는 Physical  Memory의 덩어리로 Mapping 하는 것
+
+이 프로세스가 적재되는 곳은 BASE 레지스터가 될 것이고 크기는 BOUND 레지스터에 적힌 값
+
+<img src="./Images/virtualmemory19.png" />
+
+<img src="./Images/virtualmemory20.png" />
+
+<img src="./Images/virtualmemory21.png" />
+
+BASE, BOUND Register 값은 처음 load를 했을 때 정해져 있어야 한다. 
+
+이 값을 프로세스가 바꾸면 안된다 바꾸게 되면 Protection이 안된다.
+
+Context에 포함이 되어야 한다.
+
+<img src="./Images/virtualmemory22.png" />
+
+<img src="./Images/virtualmemory23.png" />
+
+<img src="./Images/virtualmemory24.png" />
+
+<img src="./Images/virtualmemory25.png" />
+
+BASE and BOUND Register를 사용하면 
+
+1. 하드웨어를 간단하게 구현할 수 있고
+2. 간단한 구현임에도 각 프로세스의 Virtual Memory를 구현할 수 있다.
+3. 포인터 위치가 고정되는 문제가 해결된다. 다시 말해, 임의의 위치에 프로세스를 적재할 수 있다.
+4. Protection이 가능하다
+5. (모든 주소를 변환하지 않고 BASE Register의 값을 변경함으로써) 메모리 상에서 데이터의 위치를 유연하게 할당할 수 있다.
+
+----
+
+#### Limitation
+
+<img src="./Images/virtualmemory26.png" />
+
+1. 프로세스가 자기 자신을 Protect를 못한다.
+2. Memory를 공유하기가 어렵다. 같은 코드를 가진 프로세스를 동시에 실행시켰을 때 코드 영역이 같을텐데 두 개의 메모리 공간을 차지하게 된다.
+3. 메모리가 동적으로 커지지 못함(Internal Fragmentation 문제 발생)
+
+----
+
+<img src="./Images/virtualmemory27.png" />
+
+<img src="./Images/virtualmemory28.png" />
+
+프로세스가 동적으로 사용하는 메모리(스택, 힙)가 있으므로 메모리가 부족하지 않도록 크게 할당을 해줘야 한다.
+
+이렇게 되면 Internal fragmentation(내부 단편화) 문제가 발생할 수 있다.
+
+Internal fragmentation(내부 단편화) 는 할당된 메모리 중에서 사용하지 않는 메모리가 존재하는 것을 말한다. 이는 효율적이라고 할 수 없고 Space가 낭비 된다고 말할 수 있다.
+
+<img src="./Images/virtualmemory29.png" />
+
+만약 메모리를 충분하게 할당하지 않는다면 위와 같이 스택이 힙 영역을 침범하게 될 수 있다.
+
+<img src="./Images/virtualmemory30.png" />
+
+
+
+이 문제는 Stack 영역을 위로 올리지 않는 이상 해결될 수 없고 올린다 하더라도 다시 Internal fragmentation 문제가 발생할 수 있다.
