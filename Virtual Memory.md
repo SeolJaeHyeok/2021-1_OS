@@ -214,3 +214,128 @@ Internal fragmentation(내부 단편화) 는 할당된 메모리 중에서 사�
 
 
 이 문제는 Stack 영역을 위로 올리지 않는 이상 해결될 수 없고 올린다 하더라도 다시 Internal fragmentation 문제가 발생할 수 있다.
+
+----
+
+#### SEGMENTATION
+
+<img src="./Images/virtualmemory31.png" />
+
+BASE and BOUND는 간단하지만 하나의 덩어리로 생각해야되는 문제가 있었다.
+
+이를 한 덩어리로 생각하지 않고 로지컬한 덩어리로 나누면 어떨까 하는 생각에 SEGMENTATION 방식이 나오게 됐다.
+
+BASE and BOUND의 심각한 문제점 스택과 힙이 합쳐지는 문제를 스택과 힙을 분리해놓는 접근 방식으로 해결할 수 있다.
+
+각각의 프로세스마다 BASE and BOUND 레지스터를 여러 개 가지게 만드는 것
+
+프로세스의 가상 메모리 공간을 세그먼트라는 단위로 여러 개로 쪼개고 각 세그먼트마다 BASE, BOUND를 두는 것
+
+여기서는 BASE, BOUND를 여러 개 두거나 테이블을 만들어 테이블을 레지스터가 가리키게 한 다음 여러 세그먼트와 BASE, BOUND를 테이블에 적는 방식도 있다.
+
+각각의 세그먼트는 독립적으로 할당될 수도 있고 이동할 수도 있고 변경될 수도 있다.
+
+----
+
+<img src="./Images/virtualmemory32.png" />
+
+보통 코드 데이터 동적 메모리 영역이 여러 세그먼트로 나뉘게 되는데 주로 사용하는 것이 code, heap, stack segment다.
+
+CPU의 아키텍쳐에 따라 세그먼트의 개수는 달라질 수 있다.
+
+그렇다면 가상 메모리 주소가 왔을 때 CPU가 Physical Memory를 바꿔야 하는데, 바꾸려면 이 주소가 어떤 세그먼트에 속하는지를 CPU가 알아야한다. 어떻게 찾아야될까? 
+
+----
+
+<img src="./Images/virtualmemory33.png" />
+
+위와 같이 주소 공간이 있을 때 일부는 세그먼트를 나타내는 인덱스로 사용하고 그 세그먼트 안에서 어디에 존재하는 지를 offset으로 사용하면 세그먼트가 어디에 있는지를 쉽게 알아낼 수 있다.
+
+----
+
+<img src="./Images/virtualmemory34.png" />
+
+세그멘테이션을 사용할 때 운영체제와 CPU는 임무를 나눠서 가지게 된다. 운영체제는 세그먼트와 세그먼트의 인덱스를 테이블을 통해 관리해줘야 한다. 그 테이블에 세그먼트에 대한 정보와 각각의 BASE,BOUND가 있을 것이다.
+
+그런 다음 이 세그먼트가 Physical Memory 상 어디에 들어가야 되는지를 결정해줘야 한다. CPU는 모르기 때문에 운영체제가 이 작업을 해준다.
+
+그 다음 CPU가 프로세스가 수행하면서 주소(Virtual Address)가 나오게 되면 OS가 만들어놓은 세그먼트 테이블을 참조해서 Physical Address로 변경을 해주는 역할을 한다. 이때 CPU 내의 MMU가 이 작업을 하게 된다. 
+
+또한 프로세스가 수행되다가 Context Switching이 일어나면 CPU가 새로운 프로세스를 위한 세그먼트 테이블을 사용하도록 BASE, BOUND의 값을 바꿔줘야 하고 프로세스가 종료가 되면 Free를 해줘야 하는 것이 운영체제의 역할이다. 
+
+그런 다음 다시금 CPU는 OS가 준 정보에 의해서 Address Translation을 하게 된다.
+
+----
+
+<img src="./Images/virtualmemory35.png" />
+
+<img src="./Images/virtualmemory36.png" />
+
+----
+
+<img src="./Images/virtualmemory37.png" />
+
+----
+
+<img src="./Images/virtualmemory38.png" />
+
+각 세그먼트마다 할 수 있는 Operation을 허용하거나 허용하지 않는 것을 세밀하게 할 수 있다.
+
+위 그림처럼 Code 영역에 Read와 Execution만 주게 되는 것인데 Code영역이 자기 자신의 영역을 쓰게 된다면 Protection에 문제가 있을 수 있는데 이를 막을 수 있다. 만약 Permission을 어기게 되면 Exception을 일으킬 수 있다.
+
+----
+
+<img src="./Images/virtualmemory39.png" />
+
+<img src="./Images/virtualmemory40.png" />
+
+32 bit 이상의 CPU에서는 세그먼트를 거의 사용하지 않고 주로 페이징을 사용한다.
+
+----
+
+<img src="./Images/virtualmemory41.png" />
+
+Segmentation Fault 는 Segmentation을 벗어나서 Read나 Write를 했다는 뜻( Ex: Segement의 Bound Register를 넘어갔다 )이기도 하지만 이는 좀 잘못된 표현이다. 로지컬하게 데이터 스트럭쳐를 파괴한 경우 다시 말해 포인터 연산이 무언가 잘못된 연산을 했을 때 Segmentation Fault가 일어나게 된다.
+
+현재 OS는 Segment를 사용하지 않고 Page table을 사용하기 때문에 Segmentation Fault는 시대착오적이다.
+
+----
+
+<img src="./Images/virtualmemory42.png" />
+
+BASE and BOUND Register로 구현 했을 때는 한 덩어리이기 때문에 똑같은 프로그램을 두 번 수행하면 코드가 두 개가 존재하는 비효율이 있는데 세그먼트에서는 그것을 쉽게 해결할 수 있다. OS가 만들어줄 때 테이블을 잘 만들어주면 된다.
+
+위의 그림을 보면 코드는 0번 세그먼트인데 둘 다 0번 세그먼트의 BASE, BOUND를 똑같이 만들어 주면 된다. 그러면 한 쪽 코드가 어딘가의 Physical Memory에 매핑이 되어있을 것이고 그 똑같은 매핑을 다른 프로세스가 가지고 있다면 코드를 두 번 메모리에 카피하지 않고도 이미 메모리에 적재된 그 주소를 가리키게만 하면 프로세스1이 이미 로드한 코드를 프로세스2가 사용할 수 있게 된다.
+
+데이터의 경우에도 마찬가지로 11의 BASE를 똑같이 맞춰주게 되면 똑같은 Physical Memory를 접근하게 된다. 그렇게 되면 같은 메모리 영역을 쓰게 되고 메모리 공유 문제를 쉽게 해결할 수 있다.
+
+----
+
+<img src="./Images/virtualmemory43.png" />
+
+----
+
+<img src="./Images/virtualmemory44.png" />
+
+1. BASE and BOUND를 사용하는 이점을 모두 가지면서 동시에 Address Space를 나눠줄 수 있다는 장점이 있다.
+
+2. 또한 각각의 세그먼트의 크기를 다르게 할당할 수 있으니까 internal fragmentation을 예방할 수 있다.
+
+3. 공유 메모리를 제공할 수 있다.
+4. 각 세그먼트의 Permission을 따로 줘서 코드를 overwriting 하는 것을 막을 수 있고, 데이터 영역에서의 수행을 막을 수 있다.
+
+----
+
+<img src="./Images/virtualmemory45.png" />
+
+세그멘트를 사용하게 되면 Internal fragmentation을 막을 순 있지만 External fragmentation 문제가 생길 수 있다.
+
+External fragmentation이란 세그멘테이션들을 나누어서 넣게 되면 계속 사용하다가 세그먼트 들이 위 그림처럼 분산되어서 메모리에 적재가 될 것이다. 이 상태에서 남아 있는 메모리(하늘색 부분 = free memory)가 꽤 많게 된다. 그러면 남아있는 메모리만큼 어떤 프로세스를 적재시켜 수행을 하고 싶지만 세그먼트 자체는 연속적인 메모리여야 하므로 세그먼트 하나가 들어갈 수 없을만큼 작은 파편으로 쪼개질 수 있으므로 충분한 메모리가 있음에도 불구하고 프로세스를 load를 할 수 없는 경우가 생긴다. 이게 External fragmentation이다.
+
+<img src="./Images/virtualmemory46.png" />
+
+<img src="./Images/virtualmemory47.png" />
+
+이걸 해결하기 위해 Compaction을 해주는 작업을 하게 된다. 현재 존재하는 세그먼트들을 한 쪽으로 모으면 집어 넣을 수 있지만 이렇게 하려면 현재 수행중인 프로세스를 모두 정지시킨 다음 메모리를 모두 옮겨주고 테이블도 모두 변경하고 집어 넣어줘야 한다. 이 작업은 굉장히 overhead가 큰 작업이고 이는 현실적으로는 불가능하다.
+
+세그먼트는 여러 가지 문제를 해결하지만 external fragmentation 문제를 가지고 있다.
