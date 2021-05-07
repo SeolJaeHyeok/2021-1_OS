@@ -43,19 +43,19 @@ parser = OptionParser()
 parser.add_option('-A', '--addresses', default='-1',
                   help='a set of comma-separated pages to access; -1 means randomly generate',
                   action='store', type='string', dest='addresses')
-parser.add_option('-s', '--seed', default=0, help='the random seed', action='store', type='int', dest='seed')
-parser.add_option('-a', '--asize', default='16k', help='address space size (e.g., 16, 64k, 32m, 1g)', action='store',
+parser.add_option('-s', '--seed', default=2, help='the random seed', action='store', type='int', dest='seed')
+parser.add_option('-a', '--asize', default='32k', help='address space size (e.g., 16, 64k, 32m, 1g)', action='store',
                   type='string', dest='asize')
-parser.add_option('-p', '--physmem', default='64k', help='physical memory size (e.g., 16, 64k, 32m, 1g)',
+parser.add_option('-p', '--physmem', default='1m', help='physical memory size (e.g., 16, 64k, 32m, 1g)',
                   action='store', type='string', dest='psize')
-parser.add_option('-P', '--pagesize', default='4k', help='page size (e.g., 4k, 8k, whatever)', action='store',
+parser.add_option('-P', '--pagesize', default='8k', help='page size (e.g., 4k, 8k, whatever)', action='store',
                   type='string', dest='pagesize')
 parser.add_option('-n', '--numaddrs', default=5, help='number of virtual addresses to generate', action='store',
                   type='int', dest='num')
 parser.add_option('-u', '--used', default=50, help='percent of virtual address space that is used', action='store',
                   type='int', dest='used')
-parser.add_option('-v', help='verbose mode', action='store_true', default=False, dest='verbose')
-parser.add_option('-c', help='compute answers for me', action='store_true', default=False, dest='solve')
+parser.add_option('-v', help='verbose mode', action='store_true', default=True, dest='verbose')
+parser.add_option('-c', help='compute answers for me', action='store_true', default=True, dest='solve')
 
 (options, args) = parser.parse_args()
 
