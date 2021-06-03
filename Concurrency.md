@@ -110,3 +110,74 @@ Mutexes(상호 배제)를 만들어서 Atomicity를 이룸
 
 <img src="./images/concurrency16.png" />
 
+Lock의 기본적인 아이디어는 Critical Section을 장소처럼 생각하는 것
+
+장소에 들어가려면 Lock에 대한 접근권한을 가져서 Lock을 사용해 접근할 수 있는 개념
+
+Lock과 unlock으로 둘러쌓여 있는 Critical Section에는 쓰레드가 하나만 들어가는 것을 보장해야 한다. 즉, lock과 unlock 사이에는 Intruction이 Atomic(중간에 끼어들지 않음)이다. 
+
+----
+
+<img src="./Images/concurrency17.png" />
+
+Critical Section 안에 아무런 Instruction이 없다면 lock을 얻어 쓰레드가 들어갈 수 있다.
+
+나머지 쓰레드들은 unlock될 때까지 기다려야 한다.
+
+----
+
+<img src="./Images/concurrency18.png" />
+
+lock에 대한 Operation을 가지고 Critical Section을 만드려면 하드웨어의 지원이 있어야 한다. 
+
+----
+
+<img src="./Images/concurrency19.png" />
+
+
+
+----
+
+<img src="./Images/concurrency20.png" />
+
+CPU 마다 하드웨어 마다 지원되는 Atomic Instruction이 다르다.
+
+----
+
+<img src="./Images/concurrency21.png" />
+
+Lock을 구현할 때 필요한 조건
+
+1. Mutual exclusion - 정확성, Critical Section에 반드시 하나만 들어가도록 보장해야한다.
+2. Progress - 아무도 lock을 잡고 있지 않으면 누군가는 들어가야 한다. 다시 말해 Critical Section에 누군가 진입을 해야 한다. 
+3. Bounded waiting - unlock을 했다면 다른 누군가가 들어갈 수 있어야 한다.
+
+----
+
+<img src="./Images/concurrency22.png" />
+
+----
+
+<img src="./Images/concurrency23.png" />
+
+----
+
+<img src="./Images/concurrency24.png" />
+
+----
+
+<img src="./Images/concurrency25.png" />
+
+----
+
+<img src="./Images/concurrency26.png" />
+
+
+
+----
+
+<img src="./Images/concurrency27.png" />
+
+----
+
+<img src="./Images/concurrency28.png" />
