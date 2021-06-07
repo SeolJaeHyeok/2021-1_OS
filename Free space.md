@@ -86,9 +86,27 @@ Best Fit - 가장 알맞은 크기를 가진 노드에 할당을 하기 때문�
 
 <img src="./Images/freespace17.png" />
 
+기본적인 Free List 구현의 성능을 어떻게 높힐것인가
+
 <img src="./Images/freespace18.png" />
 
+1. 할당을 할 때 사이즈에 맞는 크기의 노드를 찾느냐 - Best Fit 
+   - External Fragmentation이 적다
+   - 속도가 느리다. 보통 O(n)
+2. 가장 처음 노드에 할당을 하느냐 - First Fit
+   - External Fragmentation이 크다
+   - 속도가 빠르다. 보통 O(n)보다 빠름
+
+3. 위 두 개의 방법의 중간 정도되는 방법 - Next Fit
+   - 약간의 자료구조 변경이 필요
+   - Free를 할 때 free 메모리가 연속해 있으면 합쳐줘야 하는데  free가 속도가 느린것을 개선하기 위해(O(n) -> O(1))
+   - Bining - External Fragmentation을 줄이면서 할당을 빠르게 하는 방법, 구현이 복잡, Internal Fragmentation이 발생
+
 <img src="./Images/freespace19.png" />
+
+자료구조를 Circular List로 변경.
+
+First Fit을 하지만 Split이 일어나게 되면 헤드의 위치(원래는 주소의 위치가 가장 큰 곳에 고정)를 다음 위치로 변경. 찾는 순서의 시작점이 변경
 
 <img src="./Images/freespace20.png" />
 
@@ -100,13 +118,34 @@ Best Fit - 가장 알맞은 크기를 가진 노드에 할당을 하기 때문�
 
 <img src="./Images/freespace24.png" />
 
+Malloc의 속도를 향상시킬 수 있는 방법
+
+1. 2의 제곱으로만 할당을 해주는 것 - External Fragmentation을 줄이지만 Internal Fragmentation이 늘어나고 속도면에서는 큰 이점이 없음
+2. Binning
+
 <img src="./Images/freespace25.png" />
 
 <img src="./Images/freespace26.png" />
 
+Binning - Free List를 같은 사이즈의 Bin으로 미리 나누어 놓는 것. Ex) 32byte 몇 개, 64yte 몇 개, 제일 크게는 페이지로 나누어 놓는 것
+
+각 크기마다 미리미리 만들어 놓기 때문에 찾기가 쉬워지기 때문에 O(1)에 찾을 수가 있다.
+
+만약 해당하는 크기의 Bin이 모두 할당이 되어서 없다면 더 큰 Bin을 나누어서 만들어주기 때문에 약간의 시간이 더 소요된다. 
+
 <img src="./Images/freespace27.png" />
 
+다음으로는 멀티 쓰레드가 Malloc을 할 경우에 대해서 생각해봐야 한다. 
+
+멀티 쓰레드에서 Malloc을 쓰게 되면 Lock을 사용하기 때문에 성능이 떨어진다.
+
 <img src="./Images/freespace28.png" />
+
+그렇기 때문에 Lock을 사용하지 않고 Arena라는 구조를 사용한다.
+
+Arena -  각 쓰레드마다 힙을 나눠서 주는 것. 여러 개의 Arena를 만들어 놓고 각 쓰레드가 Malloc을 위해서 사용하는 공간. 각각의 Arena에는 Free List가 따로따로 존재. 쓰레드가 생기면 사용할 Arena를 배정하므로 Lock을 사용할 필요 x
+
+물론 Arena의 수보다 쓰레드가 많아지게 되면 문제가 생길 수 있다. 그렇기에 적절한 수를 유지해야 하는 필요성이 있다.
 
 <img src="./Images/freespace29.png" />
 
@@ -114,5 +153,17 @@ Best Fit - 가장 알맞은 크기를 가진 노드에 할당을 하기 때문�
 
 <img src="./Images/freespace31.png" />
 
+메모리 누수가 생기는 경우
+
+free를 안할 때 메모리 누수가 발생
+
 <img src="./Images/freespace32.png" />
+
+- Dangling pointer - Malloc을 하고 free까지 했는데 해당 포인터를 나중에 그냥 써버리는 경우 
+  - 이렇게 한다면 어떻게 될 지 모르게 된다.
+
+- Double free - free를 두 번 하는 경우
+  - 일반적으로 Free list가 연산을 하게되므로 잘못되는 경우가 생길 수 있는데 마찬가지로 정확히 어떻게 될 지 모른다.
+
+
 
